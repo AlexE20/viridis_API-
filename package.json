@@ -1,0 +1,27 @@
+{
+  "name": "viridis_api-",
+  "version": "1.0.0",
+  "description": "API OF VIRIDIS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexE20/viridis_API-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexE20/viridis_API-/issues"
+  },
+  "homepage": "https://github.com/AlexE20/viridis_API-#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "firebase-admin": "^13.3.0"
+  }
+}
