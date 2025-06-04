@@ -1,18 +1,18 @@
-const PlantModel = require('../models/plantModel');
+const plantService = require('../services/plantService');
 
-const searchPlants = async (req, res) => {
-  const { name } = req.query;
-
-  if (!name) return res.status(400).json({ error: 'Name is required' });
-
+const getPlants = async (req, res) => {
   try {
-    const plants = await PlantModel.getPlantsByName(name);
-    res.json(plants);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch plants' });
+    const plants = await plantService.getAllPlants();
+    if (plants.length === 0) {
+      return res.status(404).json({ message: 'No plants found' });
+    }
+    res.status(200).json(plants);
+  } catch (error) {
+    console.error('Error fetching plants:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 module.exports = {
-  searchPlants,
+  getPlants,
 };
