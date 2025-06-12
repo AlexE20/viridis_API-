@@ -1,4 +1,4 @@
-require("dotenv").config();
+const doetenv=require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const plantRoutes = require('./routes/plantRoutes');
