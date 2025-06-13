@@ -15,7 +15,7 @@ const getAllGardens = async (userId) => {
     return Gardens
 };
 
-const addGarden=async(userId)=>{
+const addGarden=async(userId,data)=>{
     const gardenRef=db
     .collection("users").doc(userId)
     .collection("gardens").add({
@@ -25,15 +25,17 @@ const addGarden=async(userId)=>{
 
     const GardenSnapshot=await gardenRef.get();
 
-    return new Garden(GardenSnapshot.id,GardenSnapshot.data)
+    return new Garden(GardenSnapshot.id,GardenSnapshot.data())
 
 }
 
-const deleteGarden=async(gardenId)=>{
+const deleteGarden=async(userId,gardenId)=>{
     const gardenRef=db
+    .collection("users").doc(userId)
     .collection("gardens").doc(gardenId);
 
     await gardenRef.delete();
+    return true;
 }
 
 

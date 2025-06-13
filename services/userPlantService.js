@@ -17,14 +17,17 @@ const getAllUserPlantsByGarden = async (userId, gardenId) => {
     return userPlants;
 };
 
-const deletePlantById = async (UserPlantId) => {
+const deletePlantById = async (userId, gardenId, UserPlantId) => {
     const UserPlantRef =
         db
+            .collection("users").doc(userId)
+            .collection("gardens").doc(gardenId)
             .collection("user_plants").doc(UserPlantId);
 
 
     await UserPlantRef.delete();
-    return true;
+
+    return true
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
@@ -32,10 +35,15 @@ const addUserPlant = async (userId, plantId, gardenId) => {
     const plantSnapshot = await plantRef.get();
 
 
+    if (!plantSnapshot.exists) {
+        return null;
+    }
+
+
     const plantData = plantSnapshot.data();
 
     const newPlantRef = await db
-        .collection("user").doc(userId)
+        .collection("users").doc(userId)
         .collection("gardens").doc(gardenId)
         .collection("user_plants").add(plantData);
 
