@@ -1,5 +1,5 @@
 const db = require('../firebase/config');
-const UserPlant = require('../models/UserPlant');
+const UserPlant = require('../models/userPlantModel');
 
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
     const UserPlantRef = db
