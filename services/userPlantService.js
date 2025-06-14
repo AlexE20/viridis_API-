@@ -1,62 +1,60 @@
-const db = require('../firebase/config');
-const UserPlant = require('../models/userPlantModel');
+const db = require("../firebase/config");
+const UserPlant = require("../models/userPlantModel");
 
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
-    const UserPlantRef = db
-        .collection("users").doc(userId)
-        .collection("gardens").doc(gardenId)
-        .collection("user_plants");
+  const UserPlantRef = db
+    .collection("users")
+    .doc(userId)
+    .collection("gardens")
+    .doc(gardenId)
+    .collection("user_plants");
 
-    const snapshot = await UserPlantRef.get();
+  const snapshot = await UserPlantRef.get();
 
+  const userPlants = snapshot.docs.map((doc) => {
+    return new UserPlant(doc.id, doc.data());
+  });
 
-    const userPlants = snapshot.docs.map((doc) => {
-        return new UserPlant(doc.id, doc.data());
-    });
-
-    return userPlants;
+  return userPlants;
 };
 
 const deletePlantById = async (userId, gardenId, UserPlantId) => {
-    const UserPlantRef =
-        db
-            .collection("users").doc(userId)
-            .collection("gardens").doc(gardenId)
-            .collection("user_plants").doc(UserPlantId);
+  const UserPlantRef = db
+    .collection("users")
+    .doc(userId)
+    .collection("gardens")
+    .doc(gardenId)
+    .collection("user_plants")
+    .doc(UserPlantId);
 
+  await UserPlantRef.delete();
 
-    await UserPlantRef.delete();
-
-    return true
+  return true;
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
-    const plantRef = db.collection("plants").doc(plantId);
-    const plantSnapshot = await plantRef.get();
+  const plantRef = db.collection("plants").doc(plantId);
+  const plantSnapshot = await plantRef.get();
 
+  if (!plantSnapshot.exists) {
+    return null;
+  }
 
-    if (!plantSnapshot.exists) {
-        return null;
-    }
+  const plantData = plantSnapshot.data();
 
+  const newPlantRef = await db
+    .collection("users")
+    .doc(userId)
+    .collection("gardens")
+    .doc(gardenId)
+    .collection("user_plants")
+    .add(plantData);
 
-    const plantData = plantSnapshot.data();
-
-    const newPlantRef = await db
-        .collection("users").doc(userId)
-        .collection("gardens").doc(gardenId)
-        .collection("user_plants").add(plantData);
-
-    return new UserPlant(newPlantRef.id, plantData);
-
-
-}
-
-
-
+  return new UserPlant(newPlantRef.id, plantData);
+};
 
 module.exports = {
-    getAllUserPlantsByGarden,
-    deletePlantById,
-    addUserPlant
+  getAllUserPlantsByGarden,
+  deletePlantById,
+  addUserPlant,
 };

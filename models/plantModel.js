@@ -6,7 +6,7 @@ class Plant {
     this.care_level = data.care_level;
     this.watering = data.watering;
     this.default_image = data.medium_url;
-    this.recommendations = data.care_guide || []; 
+    this.recommendations = data.care_guide || [];
   }
 }
 
