@@ -2,14 +2,12 @@ const db = require("../firebase/config");
 const UserPlant = require("../models/userPlantModel");
 
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
-  const UserPlantRef = db
-    .collection("users")
-    .doc(userId)
-    .collection("gardens")
-    .doc(gardenId)
-    .collection("user_plants");
 
-  const snapshot = await UserPlantRef.get();
+  const userPlantsRef = db.collection("user_plants");
+  const snapshot = await userPlantsRef
+    .where("userId", "==", userId)
+    .where("gardenId", "==", gardenId)
+    .get();
 
   const userPlants = snapshot.docs.map((doc) => {
     return new UserPlant(doc.id, doc.data());
@@ -18,17 +16,10 @@ const getAllUserPlantsByGarden = async (userId, gardenId) => {
   return userPlants;
 };
 
-const deletePlantById = async (userId, gardenId, UserPlantId) => {
-  const UserPlantRef = db
-    .collection("users")
-    .doc(userId)
-    .collection("gardens")
-    .doc(gardenId)
-    .collection("user_plants")
-    .doc(UserPlantId);
+const deletePlantById = async (userPlantId) => {
 
-  await UserPlantRef.delete();
-
+  const userPlantRef = db.collection("user_plants").doc(userPlantId);
+  await userPlantRef.delete();
   return true;
 };
 
@@ -42,15 +33,17 @@ const addUserPlant = async (userId, plantId, gardenId) => {
 
   const plantData = plantSnapshot.data();
 
-  const newPlantRef = await db
-    .collection("users")
-    .doc(userId)
-    .collection("gardens")
-    .doc(gardenId)
-    .collection("user_plants")
-    .add(plantData);
+  // Add userId and gardenId as fields (foreign keys)
+  const newUserPlantData = {
+    ...plantData,
+    userId,
+    gardenId,
+    addedAt: db.FieldValue.serverTimestamp(), // optional: timestamp when added
+  };
 
-  return new UserPlant(newPlantRef.id, plantData);
+  const newPlantRef = await db.collection("user_plants").add(newUserPlantData);
+
+  return new UserPlant(newPlantRef.id, newUserPlantData);
 };
 
 module.exports = {

@@ -1,37 +1,36 @@
-const db = require("../firebase/config");
+const {db, admin} = require("../firebase/config");
 const Garden = require("../models/gardenModel");
 
 const getAllGardens = async (userId) => {
-  const GardenRef = db.collection("users").doc(userId).collection("gardens");
+  const gardensRef = db.collection("gardens").where("idUser", "==", userId);
+  const gardensSnapshot = await gardensRef.get();
 
-  const GardenSnapshot = await GardenRef.get();
-
-  const Gardens = GardenSnapshot.docs.map((doc) => {
+  const gardens = gardensSnapshot.docs.map((doc) => {
     return new Garden(doc.id, doc.data());
   });
 
-  return Gardens;
+  return gardens;
 };
+
+
 
 const addGarden = async (userId, data) => {
-  const gardenRef = db
-    .collection("users")
-    .doc(userId)
-    .collection("gardens")
-    .add({
-      ...data,
-      idUser: userId,
-    });
 
-  const GardenSnapshot = await gardenRef.get();
+  const gardenRef = await db.collection("gardens").add({
+    ...data,
+    idUser: userId,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
 
-  return new Garden(GardenSnapshot.id, GardenSnapshot.data());
+
+  const gardenSnapshot = await gardenRef.get();
+
+  return new Garden(gardenSnapshot.id, gardenSnapshot.data());
 };
+
 
 const deleteGarden = async (userId, gardenId) => {
   const gardenRef = db
-    .collection("users")
-    .doc(userId)
     .collection("gardens")
     .doc(gardenId);
 
