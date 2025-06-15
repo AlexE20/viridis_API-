@@ -1,6 +1,5 @@
 const { db, admin } = require("../firebase/config");
 
-const FieldValue = admin.firestore.FieldValue;
 const UserPlant = require("../models/userPlantModel");
 
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
