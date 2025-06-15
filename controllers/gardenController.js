@@ -30,9 +30,9 @@ const addGarden = async (req, res) => {
 };
 
 const deleteGarden = async (req, res) => {
-  const { userId, gardenId } = req.params;
+  const { gardenId } = req.params;
   try {
-    const deletedGarden = await gardenService.deleteGarden(userId, gardenId);
+    const deletedGarden = await gardenService.deleteGarden(gardenId);
     if (!deletedGarden) {
       return res.status(404).json({ message: "Garden not found" });
     }

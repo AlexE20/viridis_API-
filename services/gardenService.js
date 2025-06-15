@@ -29,7 +29,7 @@ const addGarden = async (userId, data) => {
 };
 
 
-const deleteGarden = async (userId, gardenId) => {
+const deleteGarden = async (gardenId) => {
   const gardenRef = db
     .collection("gardens")
     .doc(gardenId);
