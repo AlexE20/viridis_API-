@@ -14,15 +14,17 @@ const getAllPlants = async (limit = 10, startAfterId = null) => {
 
   const snapshot = await query.get();
 
-
+  
   if (snapshot.empty) return [];
 
   const plants = [];
   snapshot.forEach((doc) => {
     const data = doc.data();
+  
     plants.push(new Plant(doc.id, data));
   });
 
+  
   return plants;
 };
 

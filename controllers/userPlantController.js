@@ -18,11 +18,9 @@ const getAllUserPlants = async (req, res) => {
 };
 
 const deletePlantById = async (req, res) => {
-  const { userId, gardenId, userPlantId } = req.params;
+  const { userPlantId } = req.params;
   try {
     const plantDeleted = await plantService.deletePlantById(
-      userId,
-      gardenId,
       userPlantId
     );
     if (!plantDeleted) {
@@ -36,22 +34,26 @@ const deletePlantById = async (req, res) => {
 };
 
 const addUserPlant = async (req, res) => {
-  const { userId, plantId, gardenId } = req.params;
+  const { userId, gardenId } = req.params;
+  const {id} = req.body; 
+  console.log(req.body)
+
+  if (!id) {
+    return res.status(400).json({ message: "plantId is required in body" });
+  }
+
   try {
-    const userPlant = await plantService.addUserPlant(
-      userId,
-      plantId,
-      gardenId
-    );
+    const userPlant = await plantService.addUserPlant(userId, id, gardenId);
     if (!userPlant) {
-      return res.status(400).json({ message: "Bad request" });
+      return res.status(400).json({ message: "Bad request: plant not found or cannot be added" });
     }
-    return res.status(200).json(userPlant);
+    return res.status(201).json(userPlant);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 module.exports = {
   getAllUserPlants,

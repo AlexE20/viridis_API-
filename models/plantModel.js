@@ -5,7 +5,7 @@ class Plant {
     this.scientific_name = data.scientific_name || [];
     this.care_level = data.care_level;
     this.watering = data.watering;
-    this.default_image = data.medium_url;
+    this.default_image = data.default_image?.medium_url || null;
     this.recommendations = data.care_guide || []; 
   }
 }

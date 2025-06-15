@@ -4,9 +4,9 @@ const userPlantController = require("../controllers/userPlantController");
 
 router.get("/:userId/:gardenId", userPlantController.getAllUserPlants);
 router.delete(
-  "/:userId/:gardenId/:userPlantId",
+  "/:userPlantId",
   userPlantController.deletePlantById
 );
-router.post("/:userId/:gardenId/:plantId", userPlantController.addUserPlant);
+router.post("/:userId/:gardenId", userPlantController.addUserPlant);
 
 module.exports = router;

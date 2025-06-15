@@ -1,30 +1,39 @@
-const db = require("../firebase/config");
+const {db, admin} = require("../firebase/config");
+
+const FieldValue = admin.firestore.FieldValue;
 const UserPlant = require("../models/userPlantModel");
 
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
-
   const userPlantsRef = db.collection("user_plants");
   const snapshot = await userPlantsRef
     .where("userId", "==", userId)
     .where("gardenId", "==", gardenId)
     .get();
 
-  const userPlants = snapshot.docs.map((doc) => {
-    return new UserPlant(doc.id, doc.data());
-  });
+  const userPlants = snapshot.docs.map((doc) => new UserPlant(doc.id, doc.data()));
 
   return userPlants;
 };
 
-const deletePlantById = async (userPlantId) => {
 
-  const userPlantRef = db.collection("user_plants").doc(userPlantId);
+const deletePlantById = async (userPlantId) => {
+  const cleanId = userPlantId.trim();
+
+  const userPlantRef = db.collection("user_plants").doc(cleanId);
+
+  const doc = await userPlantRef.get();
+  if (!doc.exists) {
+    console.warn("Document not found:", cleanId);
+    return false;
+  }
+
   await userPlantRef.delete();
+  console.log("Deleted:", cleanId);
   return true;
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
-  const plantRef = db.collection("plants").doc(plantId);
+  const plantRef = await db.collection("plantSpeciesCatalog").doc(plantId);
   const plantSnapshot = await plantRef.get();
 
   if (!plantSnapshot.exists) {
@@ -33,12 +42,12 @@ const addUserPlant = async (userId, plantId, gardenId) => {
 
   const plantData = plantSnapshot.data();
 
-  // Add userId and gardenId as fields (foreign keys)
   const newUserPlantData = {
     ...plantData,
+    plant_id: plantId,
     userId,
     gardenId,
-    addedAt: db.FieldValue.serverTimestamp(), // optional: timestamp when added
+    addedAt: admin.firestore.FieldValue.serverTimestamp(),
   };
 
   const newPlantRef = await db.collection("user_plants").add(newUserPlantData);
@@ -46,8 +55,10 @@ const addUserPlant = async (userId, plantId, gardenId) => {
   return new UserPlant(newPlantRef.id, newUserPlantData);
 };
 
+
 module.exports = {
   getAllUserPlantsByGarden,
   deletePlantById,
   addUserPlant,
 };
+
