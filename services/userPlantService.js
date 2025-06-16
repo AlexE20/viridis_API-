@@ -18,12 +18,13 @@ const getAllUserPlantsByGarden = async (userId, gardenId) => {
 
 const deletePlantById = async (userPlantId) => {
   const userPlantRef = db.collection("user_plants").doc(userPlantId);
+
   await userPlantRef.delete();
   return true;
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
-  const plantRef = db.collection("plantSpeciesCatalog").doc(plantId);
+  const plantRef =db.collection("plantSpeciesCatalog").doc(plantId);
   const plantSnapshot = await plantRef.get();
 
   const plantData = plantSnapshot.data();
@@ -31,8 +32,8 @@ const addUserPlant = async (userId, plantId, gardenId) => {
   const newUserPlantData = {
     ...plantData,
     plant_id: plantId,
-    user_id: userId,
-    garden_id: gardenId,
+    user_id:userId,
+    garden_id:gardenId,
     addedAt: admin.firestore.FieldValue.serverTimestamp(),
   };
 
@@ -41,8 +42,22 @@ const addUserPlant = async (userId, plantId, gardenId) => {
   return new UserPlant(newPlantRef.id, newUserPlantData);
 };
 
+const getUserPlantByName = async (userPlantName) => {
+  const userPlantRef = db
+    .collection("user_plants")
+    .where("common_name", "==", userPlantName);
+
+  const userPlantSnapshot = await userPlantRef.get();
+
+  const userPlantMatch = userPlantSnapshot.docs.map((doc) => {
+    return new UserPlant(doc.id, doc.data());
+  });
+  return userPlantMatch;
+};
+
 module.exports = {
   getAllUserPlantsByGarden,
   deletePlantById,
   addUserPlant,
+  getUserPlantByName,
 };
