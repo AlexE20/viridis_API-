@@ -8,7 +8,7 @@ const getAllUserPlants = async (req, res) => {
       gardenId
     );
     if (userPlants.length === 0) {
-      return res.status(200).json({ message: "No plants yet" });
+      return res.status(200).json(userPlants);
     }
     return res.status(200).json(userPlants);
   } catch (error) {
