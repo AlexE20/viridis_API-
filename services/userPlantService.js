@@ -24,7 +24,7 @@ const deletePlantById = async (userPlantId) => {
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
-  const plantRef =db.collection("plantSpeciesCatalog").doc(plantId);
+  const plantRef =db.collection("plantCatalog").doc(plantId);
   const plantSnapshot = await plantRef.get();
 
   if (!plantSnapshot.exists) {

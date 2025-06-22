@@ -3,13 +3,13 @@ const Plant = require("../models/plantModel");
 
 const getAllPlants = async (limit = 10, startAfterId = null) => {
   let query = db
-    .collection("plantSpeciesCatalog")
+    .collection("plantCatalog")
     .orderBy("__name__")
     .limit(limit);
 
   if (startAfterId) {
     const startAfterDoc = await db
-      .collection("plantSpeciesCatalog")
+      .collection("plantCatalog")
       .doc(startAfterId)
       .get();
     if (!startAfterDoc.exists) {
