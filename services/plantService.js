@@ -33,15 +33,18 @@ const getAllPlants = async (limit = 10, startAfterId = null) => {
 };
 
 const getPlantByName = async (plantName) => {
-  const plantRef = db
-    .collection("plantSpeciesCatalog")
-    .where("common_name", "==", plantName);
+  const snapshot = await db.collection("plantCatalog").get();
 
-  const plantSnapshot = await plantRef.get();
-  const plantMatch = plantSnapshot.docs.map((doc) => {
-    return new Plant(doc.id, doc.data());
-  });
-  return plantMatch;
+  const queryLower = plantName.toLowerCase();
+
+  const matchingPlants = snapshot.docs
+    .map((doc) => new Plant(doc.id, doc.data()))
+    .filter((plant) =>
+      plant.common_name?.toLowerCase().includes(queryLower)
+    );
+
+  return matchingPlants;
 };
+
 
 module.exports = { getAllPlants, getPlantByName };
