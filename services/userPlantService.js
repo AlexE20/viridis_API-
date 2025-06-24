@@ -1,3 +1,4 @@
+const { Timestamp } = require("firebase-admin/firestore");
 const { db, admin } = require("../firebase/config");
 
 const UserPlant = require("../models/userPlantModel");
@@ -24,7 +25,7 @@ const deletePlantById = async (userPlantId) => {
 };
 
 const addUserPlant = async (userId, plantId, gardenId) => {
-  const plantRef =db.collection("plantCatalog").doc(plantId);
+  const plantRef = db.collection("plantCatalog").doc(plantId);
   const plantSnapshot = await plantRef.get();
 
   if (!plantSnapshot.exists) {
@@ -32,13 +33,16 @@ const addUserPlant = async (userId, plantId, gardenId) => {
   }
 
   const plantData = plantSnapshot.data();
+  const timeStamp = admin.firestore.Timestamp.now();
 
   const newUserPlantData = {
     ...plantData,
     plant_id: plantId,
-    user_id:userId,
-    garden_id:gardenId,
-    addedAt: admin.firestore.FieldValue.serverTimestamp(),
+    user_id: userId,
+    garden_id: gardenId,
+    addedAt: timeStamp,
+    last_watered: timeStamp,
+    streak: 0,
   };
 
   const newPlantRef = await db.collection("user_plants").add(newUserPlantData);
@@ -59,9 +63,32 @@ const getUserPlantByName = async (userPlantName) => {
   return userPlantMatch;
 };
 
+const waterUserPlant = async (userPlantId) => {
+  const userPlantRef = db.collection("user_plants").doc(userPlantId);
+  const userPlantSnapshot = await userPlantRef.get();
+
+  if (!userPlantSnapshot.exists) {
+    return null;
+  }
+
+  const userPlantData = userPlantSnapshot.data();
+  const currentTime = admin.firestore.Timestamp.now();
+
+  // Update the last watered time and add a +1 in streaks so it can be used in the front end
+  const updatedData = {
+    last_watered: currentTime,
+    streak: (userPlantData.streak || 0) + 1,
+  };
+
+  await userPlantRef.update(updatedData);
+
+  return new UserPlant(userPlantId, { ...userPlantData, ...updatedData });
+};
+
 module.exports = {
   getAllUserPlantsByGarden,
   deletePlantById,
   addUserPlant,
   getUserPlantByName,
+  waterUserPlant,
 };

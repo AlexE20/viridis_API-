@@ -63,7 +63,24 @@ const getUserPlantByName = async (req, res) => {
     }
     return res.status(200).json(plantSearched);
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const waterUserPlant = async (req, res) => {
+  const { userPlantId } = req.params;
+  try {
+    const userPlant = await plantService.waterUserPlant(userPlantId);
+    if (!userPlant) {
+      return res.status(404).json({ message: "Plant was not found" });
+    }
+    return res.status(200).json({
+      message: "Plant watered successfully",
+      userPlant: userPlant,
+    });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -73,4 +90,5 @@ module.exports = {
   deletePlantById,
   addUserPlant,
   getUserPlantByName,
+  waterUserPlant,
 };

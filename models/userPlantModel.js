@@ -10,6 +10,13 @@ class UserPlant {
     this.watering = data.watering;
     this.default_image = data.default_image?.medium_url || null;
     this.recommendations = data.care_guide || [];
+    this.last_watered =
+      data.last_watered?.toDate().toLocaleDateString("es", {
+        year: "numeric",
+        month: "long",
+        day: "2-digit",
+      }) || null;
+    this.streak = data.streak ?? 0;
   }
 }
 module.exports = UserPlant;
