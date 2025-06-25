@@ -6,8 +6,8 @@ const UserPlant = require("../models/userPlantModel");
 const getAllUserPlantsByGarden = async (userId, gardenId) => {
   const userPlantsRef = db.collection("user_plants");
   const snapshot = await userPlantsRef
-    .where("userId", "==", userId)
-    .where("gardenId", "==", gardenId)
+    .where("user_id", "==", userId)
+    .where("garden_id", "==", gardenId)
     .get();
 
   const userPlants = snapshot.docs.map(
