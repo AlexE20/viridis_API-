@@ -18,6 +18,23 @@ class UserPlant {
         day: "2-digit",
       }) || null;
     this.streak = data.streak ?? 0;
+    this.last_watered = null; // when user added plant, assume they've never watered it
+    this.watering_streak = 0;
+    this.missed_reminders = 0;
+    this.next_reminder_date = this.calculateNextReminderDate();
+  }
+
+  calculateNextReminderDate() {
+    const freqDays = {
+      low: 7,
+      medium: 3,
+      high: 1
+    };
+    const days = freqDays[this.watering] || 3;
+
+    const now = new Date();
+    now.setDate(now.getDate() + days);
+    return now.toISOString();
   }
 }
 module.exports = UserPlant;
