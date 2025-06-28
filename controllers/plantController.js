@@ -14,7 +14,7 @@ const getPlants = async (req, res) => {
 };
 
 const getPlantByName = async (req, res) => {
-  const { plantName } = req.body;
+  const { plantName } = req.query;
   try {
     const plantSearched = await plantService.getPlantByName(plantName);
     if (plantSearched.length === 0) {
