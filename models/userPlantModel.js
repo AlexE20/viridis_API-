@@ -17,9 +17,7 @@ class UserPlant {
         month: "long",
         day: "2-digit",
       }) || null;
-    this.streak = data.streak ?? 0;
-    this.last_watered = null; // when user added plant, assume they've never watered it
-    this.watering_streak = 0;
+    this.wateringStreak = 0;
     this.missed_reminders = 0;
     this.next_reminder_date = this.calculateNextReminderDate();
   }

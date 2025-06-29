@@ -1,14 +1,29 @@
 const doetenv = require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
+const cron = require("node-cron");
 const plantRoutes = require("./routes/plantRoutes");
 const authRoutes = require("./routes/authRoutes");
-
 const userPlantRoutes = require("./routes/userPlantRoutes");
 const gardenRoutes = require("./routes/gardenRoutes");
 const userRoutes = require("./routes/userRoutes")
+const { checkWateringReminders } = require("./services/notificationService");
+
+
+
 const app = express();
+
+
+
+cron.schedule("0 8 * * *", async () => {
+    console.log("Running watering reminder job...");
+    try {
+      await checkWateringReminders();
+    } catch (err) {
+      console.error("Error in watering reminder job:", err);
+    }
+  });
+
 app.use(cors());
 app.use(express.json());
 

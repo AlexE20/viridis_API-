@@ -5,7 +5,7 @@ class User {
       this.email = data.email;
       this.username = data.username;
       this.createdAt = new Date();
-      this.badge = data.badge;
+      this.badge = null;
       this.fcmToken = data.fcmToken || null;
     }
   }
