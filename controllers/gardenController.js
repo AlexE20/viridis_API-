@@ -43,8 +43,23 @@ const deleteGarden = async (req, res) => {
   }
 };
 
+const getGardenById = async (req, res) => {
+  const {gardenId} = req.params;
+  try {
+    const garden = await gardenService.getGardenById(gardenId);
+    if (!garden) {
+      return res.status(404).json({ message: "Garden not found" });
+    }
+    return res.status(200).json(garden);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getAllGardens,
   addGarden,
   deleteGarden,
+  getGardenById,
 };
