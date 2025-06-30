@@ -36,9 +36,8 @@ const getGardenById = async (gardenId) => {
   const gardenSnapshot = await gardenRef.get();
 
   if (!gardenSnapshot.exists) {
-    return null; 
+    return null;
   }
-
 
   return new Garden(gardenSnapshot.id, gardenSnapshot.data());
 };
