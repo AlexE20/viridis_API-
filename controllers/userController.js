@@ -58,4 +58,39 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, createUser, updateUser, deleteUser };
+const updateStreak = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const updated = await userService.updateStreak(userId);
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "Streak updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const updateBadges = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const updatedBadges = await userService.updateBadges(userId);
+    if (!updatedBadges) {
+      return res.status(404).json({ message: "Bad request" });
+    }
+    return res.status(200).json({ message: "Badges updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  getAllUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  updateStreak,
+  updateBadges,
+};
