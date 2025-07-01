@@ -24,9 +24,9 @@ class UserPlant {
 
   calculateNextReminderDate() {
     const freqDays = {
-      low: 7,
-      medium: 3,
-      high: 1
+      Low: 7,
+      Average: 3,
+      Frquent: 1
     };
     const days = freqDays[this.watering] || 3;
 

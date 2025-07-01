@@ -17,7 +17,7 @@ const app = express();
 
 
 
-cron.schedule("0 22 * * *", async () => {
+cron.schedule("22 16 * * *", async () => {
   console.log("🔔 Watering reminder running at 20:21 UTC (server time):", new Date().toString());
   try {
     await checkWateringReminders();
