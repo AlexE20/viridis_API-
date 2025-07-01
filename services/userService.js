@@ -59,7 +59,9 @@ const updateStreak = async (userId) => {
   await userRef.update({
     currentStreak: streakValue,
   });
-  return true;
+  const updatedUserSnapshot = await userRef.get();
+
+  return new User(updatedUserSnapshot.id, updatedUserSnapshot.data());
 };
 
 const updateBadges = async (userId) => {
@@ -81,7 +83,9 @@ const updateBadges = async (userId) => {
     const updatedBadges = [...currentBadges, ...newBadges];
     await userRef.update({ badges: updatedBadges });
   }
-  return true;
+  const updatedUserSnapshot = await userRef.get();
+
+  return new User(updatedUserSnapshot.id, updatedUserSnapshot.data());
 };
 
 module.exports = {

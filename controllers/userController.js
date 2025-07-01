@@ -61,11 +61,13 @@ const deleteUser = async (req, res) => {
 const updateStreak = async (req, res) => {
   const { userId } = req.params;
   try {
-    const updated = await userService.updateStreak(userId);
-    if (!updated) {
-      return res.status(404).json({ message: "User not found" });
+    const updatedUser = await userService.updateStreak(userId);
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Bad request" });
     }
-    return res.status(200).json({ message: "Streak updated successfully" });
+    return res
+      .status(200)
+      .json({ message: "Streak updated successfully", user: updatedUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -75,11 +77,13 @@ const updateStreak = async (req, res) => {
 const updateBadges = async (req, res) => {
   const { userId } = req.params;
   try {
-    const updatedBadges = await userService.updateBadges(userId);
-    if (!updatedBadges) {
+    const userUpdated = await userService.updateBadges(userId);
+    if (!userUpdated) {
       return res.status(404).json({ message: "Bad request" });
     }
-    return res.status(200).json({ message: "Badges updated successfully" });
+    return res
+      .status(200)
+      .json({ message: "Badges updated successfully", user: userUpdated });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
