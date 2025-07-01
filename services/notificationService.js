@@ -3,9 +3,9 @@ const { Timestamp } = require("firebase-admin/firestore");
 
 
 const wateringIntervals = {
-  Low: 7,
-  Average: 3,
-  Frequent: 1,
+  low: 7,
+  average: 3,
+  frequent: 1,
 };
 
 async function checkWateringReminders() {
