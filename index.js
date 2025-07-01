@@ -15,14 +15,17 @@ const app = express();
 
 
 
-cron.schedule("0 8 * * *", async () => {
-    console.log("Running watering reminder job...");
-    try {
-      await checkWateringReminders();
-    } catch (err) {
-      console.error("Error in watering reminder job:", err);
-    }
-  });
+
+
+cron.schedule("20 21 * * *", async () => {
+  console.log("🔔 Watering reminder running at 20:50 UTC (server time):", new Date().toString());
+  try {
+    await checkWateringReminders();
+  } catch (err) {
+    console.error("❌ Error in watering reminder job:", err);
+  }
+});
+
 
 app.use(cors());
 app.use(express.json());
