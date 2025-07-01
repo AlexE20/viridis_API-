@@ -14,11 +14,16 @@ async function checkWateringReminders() {
 
   for (const doc of snapshot.docs) {
     const plant = doc.data();
+
+    // Normalize watering to lowercase for consistent matching
     const wateringKey = (plant.watering || "").toLowerCase();
     const interval = wateringIntervals[wateringKey];
 
+    console.log(`🔍 Checking "${plant.common_name}" for user ${plant.user_id}`);
+
+    // Skip if watering or last_watered is missing
     if (!interval || !plant.last_watered) {
-      console.log(`⚠️ Skipping ${plant.common_name || doc.id} due to missing watering info`);
+      console.log(`⏭️ Skipping "${plant.common_name}" (no watering info or last watered date)`);
       continue;
     }
 
@@ -27,18 +32,15 @@ async function checkWateringReminders() {
     nextWateringDate.setDate(lastWatered.getDate() + interval);
 
     const lastSent = plant.lastReminderSent?.toDate?.();
-    const alreadyRemindedRecently = lastSent && (now - lastSent < 1000 * 60 * 60 * 12); // 12 hours
+    const recentlyReminded = lastSent && (now - lastSent < 1000 * 60 * 60 * 12); // 12 hours
 
-    console.log(`🔍 Checking "${plant.common_name}" for user ${plant.user_id}`);
-    console.log(`🪴 Last watered: ${lastWatered.toISOString()}, Next: ${nextWateringDate.toISOString()}`);
-
-    if (now >= nextWateringDate && !alreadyRemindedRecently) {
+    if (now >= nextWateringDate && !recentlyReminded) {
       const userRef = admin.firestore().collection("users").doc(plant.user_id);
       const userDoc = await userRef.get();
       const token = userDoc.data()?.fcmToken;
 
       if (!token) {
-        console.warn(`🚫 No FCM token for user ${plant.user_id}`);
+        console.warn(`⚠️ No FCM token for user ${plant.user_id}`);
         continue;
       }
 
@@ -50,18 +52,16 @@ async function checkWateringReminders() {
         },
       });
 
-      console.log(`✅ Sent reminder to ${plant.user_id} for plant "${plant.common_name}"`);
+      console.log(`✅ Reminder sent to ${plant.user_id} for "${plant.common_name}"`);
 
       const missedDays = Math.floor((now - nextWateringDate) / (1000 * 60 * 60 * 24));
-      const update = {
+
+      await doc.ref.update({
         lastReminderSent: Timestamp.fromDate(now),
         wateringStreak: missedDays > 0 ? 0 : (plant.wateringStreak || 0) + 1,
-        missed_reminders: missedDays > 0 ? (plant.missed_reminders || 0) + 1 : plant.missed_reminders || 0,
-      };
-
-      await doc.ref.update(update);
+      });
     } else {
-      console.log(`⏳ Not due yet or recently reminded for "${plant.common_name}"`);
+      console.log(`⏳ Not due or recently reminded: "${plant.common_name}"`);
     }
   }
 }
