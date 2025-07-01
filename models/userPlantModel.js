@@ -17,7 +17,7 @@ class UserPlant {
         month: "long",
         day: "2-digit",
       }) || null;
-    this.wateringStreak = 0;
+    this.wateringStreak =data.streak|| 0;
     this.missed_reminders = 0;
     this.next_reminder_date = this.calculateNextReminderDate();
   }
