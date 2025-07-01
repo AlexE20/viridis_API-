@@ -16,11 +16,11 @@ async function checkWateringReminders() {
     const plant = doc.data();
     const interval = wateringIntervals[plant.watering];
     if (!interval || !plant.lastWatered) continue;
-
+    
     const lastWatered = plant.lastWatered.toDate();
     const nextWateringDate = new Date(lastWatered);
     nextWateringDate.setDate(lastWatered.getDate() + interval);
-
+    console.log(`Checking ${plant.common_name} for plant ${plant.user_id} with ${plant.lastWatered}$`);
     const due = now >= nextWateringDate;
 
     if (due) {
@@ -46,6 +46,7 @@ async function checkWateringReminders() {
       const missedDays = Math.floor((now - nextWateringDate) / (1000 * 60 * 60 * 24));
       const update = {
         lastReminderSent: Timestamp.fromDate(now),
+        
       };
 
       if (missedDays > 0) {
