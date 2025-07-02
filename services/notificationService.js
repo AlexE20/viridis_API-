@@ -43,22 +43,43 @@ async function checkWateringReminders() {
         continue;
       }
 
+
+      
+      gardenId = plant.garden_id
+      if (gardenId) {
+        try {
+          const gardenDoc = await admin.firestore().collection("gardens").doc(gardenId).get();
+          if (gardenDoc.exists) {
+            gardenName = gardenDoc.data()?.name || "";
+          } else {
+            console.warn(`⚠️ Garden not found: ${gardenId}`);
+          }
+        } catch (e) {
+          console.error(`❌ Failed to fetch garden ${gardenId}:`, e);
+        }
+      }
       //  Send notification
       await admin.messaging().send({
         token,
         notification: {
           title: "🌿 Time to Water Your Plant!",
-          body: `Don't forget to water "${plant.common_name}" today.`,
+          body: `Don't forget to water "${plant.common_name}" today in "${gardenId}$" .`,
         },
       });
 
-      console.log(`✅ Reminder sent to ${plant.user_id} for "${plant.common_name}"`);
+      console.log(`✅ Reminder sent to ${plant.user_id} for "${plant.common_name}" in ${gardenId}`);
+
+      
+
+
+
 
       //  Create reminder document
       await admin.firestore().collection("reminders").add({
         userId: plant.user_id,
         plantId: doc.id,
         gardenId: plant.garden_id || null,
+        garden_name: gardenName || null,
         common_name: plant.common_name || "",
         image: plant.default_image || null,
         dueAt: Timestamp.fromDate(nextWateringDate),
