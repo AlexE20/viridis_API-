@@ -1,4 +1,4 @@
-const db = require("../firebase/config");
+const {db} = require("../firebase/config");
 
 const getAllPendingReminders = async (userId) => {
   const snapshot = await db
