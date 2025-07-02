@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const userPlantRoutes = require("./routes/userPlantRoutes");
 const gardenRoutes = require("./routes/gardenRoutes");
 const userRoutes = require("./routes/userRoutes")
+const reminderRoutes = require("./routes/reminderRoutes")
 const { checkWateringReminders } = require("./services/notificationService");
 
 
@@ -29,7 +30,7 @@ cron.schedule("15 23 * * *", async () => {
 
 app.use(cors());
 app.use(express.json());
-
+app.use("/api/reminders",reminderRoutes)
 app.use("/api/plants", plantRoutes);
 app.use("/api/userPlants", userPlantRoutes);
 app.use("/api/gardens", gardenRoutes);
