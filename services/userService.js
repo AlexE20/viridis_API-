@@ -97,6 +97,16 @@ const updateToken = async(uid, fcmToken) => {
   return true
 };
 
+
+const fetchUsernameById = async (userId) => {
+  const doc = await db.collection('users').doc(userId).get();
+
+  if (!doc.exists) return null;
+
+  const data = doc.data();
+  return data.username ||  null;
+};
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -104,5 +114,6 @@ module.exports = {
   deleteUser,
   updateStreak,
   updateBadges,
-  updateToken
+  updateToken,
+  fetchUsernameById
 };

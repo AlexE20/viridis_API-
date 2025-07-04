@@ -12,6 +12,6 @@ router.delete('/:userId', userController.deleteUser);
 router.patch("/currentStreak/:userId", userController.updateStreak);
 router.patch("/badges/:userId", userController.updateBadges);   
 router.post("/update-token", userController.updateToken)
-
+router.get("/:userId/user", userController.getUsernameById)
 module.exports = router;
 

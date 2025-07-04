@@ -108,6 +108,22 @@ const updateToken = async (req, res) => {
   }
 };
 
+const getUsernameById = async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const username = await userService.fetchUsernameById(userId);
+    if (!username) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ username });
+  } catch (error) {
+    console.error('Error in getUsernameById:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 
 module.exports = {
   getAllUsers,
@@ -116,5 +132,6 @@ module.exports = {
   deleteUser,
   updateStreak,
   updateBadges,
-  updateToken
+  updateToken,
+  getUsernameById
 };
