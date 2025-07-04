@@ -54,6 +54,7 @@ const updateStreak = async (userId) => {
       streakValue++;
     }
   });
+  
 
   const userRef = db.collection("users").doc(userId);
   await userRef.update({
