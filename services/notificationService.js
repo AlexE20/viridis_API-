@@ -63,7 +63,7 @@ async function checkWateringReminders() {
         token,
         notification: {
           title: "🌿 Time to Water Your Plant!",
-          body: `Don't forget to water "${plant.common_name}" today in "${gardenName}$" .`,
+          body: `Don't forget to water "${plant.common_name}" today in "${gardenName}" .`,
         },
       });
 
