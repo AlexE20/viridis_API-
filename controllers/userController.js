@@ -90,6 +90,25 @@ const updateBadges = async (req, res) => {
   }
 };
 
+
+const updateToken = async (req, res) => {
+  const { uid, fcmToken } = req.body;
+
+  if (!uid || !fcmToken) {
+    return res.status(400).json({ error: "uid and fcmToken are required" });
+  }
+
+  try {
+    await userService.updateToken(uid,fcmToken);
+
+    return res.status(200).json({ message: "Token updated successfully" });
+  } catch (error) {
+    console.error("Error updating token:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -97,4 +116,5 @@ module.exports = {
   deleteUser,
   updateStreak,
   updateBadges,
+  updateToken
 };

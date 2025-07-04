@@ -88,6 +88,15 @@ const updateBadges = async (userId) => {
   return new User(updatedUserSnapshot.id, updatedUserSnapshot.data());
 };
 
+const updateToken = async(uid, fcmToken) => {
+
+  await admin.firestore().collection("users").doc(uid).update({
+    fcmToken: fcmToken,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  return true
+};
+
 module.exports = {
   getAllUsers,
   createUser,
@@ -95,4 +104,5 @@ module.exports = {
   deleteUser,
   updateStreak,
   updateBadges,
+  updateToken
 };

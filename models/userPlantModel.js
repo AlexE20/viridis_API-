@@ -12,7 +12,7 @@ class UserPlant {
     this.default_image = data.default_image?.medium_url || null;
     this.recommendations = data.care_guide || [];
     this.last_watered = this.parseLastWatered(data.last_watered);
-    this.wateringStreak = data.streak || 0;
+    this.streak= data.streak || 0;
     this.missed_reminders = 0;
     this.next_reminder_date = this.calculateNextReminderDate();
   }
@@ -25,7 +25,7 @@ class UserPlant {
       ) {
         const date = timestamp.toDate();
         if (!isNaN(date.getTime())) {
-          return date.toLocaleDateString("es", {
+          return date.toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "2-digit",
@@ -40,7 +40,7 @@ class UserPlant {
 
   calculateNextReminderDate() {
     const freqDays = {
-      Low: 7,
+      Minimum: 7,
       Average: 3,
       Frequent: 1, 
     };

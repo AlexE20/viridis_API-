@@ -3,7 +3,7 @@ const { Timestamp } = require("firebase-admin/firestore");
 
 
 const wateringIntervals = {
-  low: 7,
+  minimum: 7,
   average: 3,
   frequent: 1,
 };
@@ -63,7 +63,7 @@ async function checkWateringReminders() {
         token,
         notification: {
           title: "🌿 Time to Water Your Plant!",
-          body: `Don't forget to water "${plant.common_name}" today in "${gardenId}$" .`,
+          body: `Don't forget to water "${plant.common_name}" today in "${gardenName}$" .`,
         },
       });
 
@@ -91,7 +91,7 @@ async function checkWateringReminders() {
       const missedDays = Math.floor((now - nextWateringDate) / (1000 * 60 * 60 * 24));
       await doc.ref.update({
         lastReminderSent: Timestamp.fromDate(now),
-        wateringStreak: missedDays > 0 ? 0 : (plant.wateringStreak || 0) + 1,
+        streak: missedDays > 0 ? 0 : (plant.streak || 0) + 1,
       });
     } else {
       console.log(`⏳ Not due or recently reminded: "${plant.common_name}"`);

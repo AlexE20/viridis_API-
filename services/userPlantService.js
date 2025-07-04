@@ -74,7 +74,7 @@ const waterUserPlant = async (userPlantId) => {
   const userPlantData = userPlantSnapshot.data();
   const currentTime = admin.firestore.Timestamp.now();
 
-  // Update the last watered time and add a +1 in streaks so it can be used in the front end
+  
   const updatedData = {
     last_watered: currentTime,
     streak: (userPlantData.streak || 0) + 1,
